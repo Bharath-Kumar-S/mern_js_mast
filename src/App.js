@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
 
-function App() {
+import React, { useEffect } from "react";
+import User from "./components/User";
+import { useState } from "react";
+
+const App = () => {
+  const [userToggle, setUserToggle] = useState(true);
+  const [users, setusers] = useState([]);
+  const name = "Bharath";
+  const isNameShowing = false;
+
+  const handleUserDisplay = () => {
+    setUserToggle(!userToggle);
+  };
+
+  useEffect(() => {
+    (async() => {
+      let response = await fetch("http://localhost:5000/subscribers");
+      let data = await response.json();
+      setusers(data);
+    })();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {userToggle && users.map((e) => <User key={e._id} user={e} />)}
+      <h1>Hello, {isNameShowing ? name : "Someone"}!</h1>
+      <button onClick={handleUserDisplay}>
+        {userToggle ? "disable" : "enable"} user info
+      </button>
     </div>
   );
-}
+};
 
 export default App;
